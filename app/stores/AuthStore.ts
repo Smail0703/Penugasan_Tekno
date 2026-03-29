@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
     name: 'Admin'
   }
 
-  const login = (emailInput: string, passwordInput: string) => {
+  const login = (emailInput: string, passwordInput: string): boolean => {
     if (emailInput === dummyUser.email && passwordInput === dummyUser.password) {
       user.value = { email: dummyUser.email, name: dummyUser.name }
       router.push('/')

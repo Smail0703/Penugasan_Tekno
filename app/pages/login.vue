@@ -1,87 +1,126 @@
 <template>
-  <div class="relative min-h-screen overflow-hidden grid grid-cols-1 md:grid-cols-2 bg-[var(--fifth-color)]">
-    <!-- Left side -->
-    <div :class="[
-      'bg-[var(--primary-color)] flex flex-col items-center justify-center text-white p-8 transition-transform duration-700',
-      successAnimation ? '-translate-x-full' : ''
-    ]">
-      <h1 class="text-6xl font-bold mb-4">Welcome Back!</h1>
-      <p class="text-center max-w-xs text-lg">
-        Silakan masuk dengan akunmu untuk melanjutkan pengalaman terbaik di website kami.
-      </p>
-    </div>
+  <div class="min-h-screen bg-gray-900 flex overflow-hidden">
+    <!-- Left: Branding -->
+    <div
+      class="hidden md:flex flex-col items-center justify-center w-1/2 bg-gray-900 relative p-12 transition-all duration-700"
+      :class="successAnimation ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100'"
+    >
+      <!-- Decorative circles -->
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl" />
 
-    <!-- Right side -->
-    <div :class="[
-      'flex items-center justify-center p-8 transition-transform duration-700',
-      successAnimation ? 'translate-x-full' : ''
-    ]">
-      <div class="w-full max-w-md bg-white rounded-xl shadow-xl border p-8 relative">
-        <div v-if="loading" class="absolute inset-0 bg-white/80 flex items-center justify-center rounded-xl z-10">
-          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
-        </div>
-
-        <h2 class="text-4xl font-semibold mb-6 text-center">Sign In</h2>
-        <form @submit.prevent="handleLogin" class="space-y-4">
-          <div>
-            <label class="block text-gray-700 mb-1" for="email">Email</label>
-            <input id="email" type="email" v-model="email" required
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block text-gray-700 mb-1" for="password">Password</label>
-            <input id="password" type="password" v-model="password" required
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <button type="submit"
-            class="w-full py-2 bg-[var(--primary-color)] text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
-            Sign In
-          </button>
-        </form>
-
-        <p class="text-center text-gray-500 mt-4">
-          Belum punya akun? <span class="text-blue-500">Daftar</span>
+      <div class="relative text-center">
+        <div class="w-20 h-20 rounded-2xl bg-yellow-400 flex items-center justify-center font-black text-gray-900 text-3xl mx-auto mb-8 shadow-2xl shadow-yellow-400/20">P</div>
+        <h1 class="text-5xl font-black text-white leading-tight mb-4">
+          Pokédex<br /><span class="text-yellow-400">World</span>
+        </h1>
+        <p class="text-gray-400 max-w-xs mx-auto text-sm leading-relaxed">
+          Your ultimate companion for exploring the Pokémon universe. Thousands of Pokémon at your fingertips.
         </p>
+        <div class="flex items-center justify-center gap-2 mt-8 text-xs text-gray-600 font-medium uppercase tracking-widest">
+          <span>v2.0</span>
+          <span>·</span>
+          <span>Powered by PokéAPI</span>
+        </div>
       </div>
     </div>
-    <div class="fixed inset-0 flex items-center justify-center bg-black/30" v-if="showAlert">
-      <div class="bg-red-500 text-white px-4 py-2 rounded shadow-lg animate-bounce">
-        {{ error }}
+
+    <!-- Right: Form -->
+    <div
+      class="flex items-center justify-center w-full md:w-1/2 bg-white p-8 transition-all duration-700"
+      :class="successAnimation ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'"
+    >
+      <div class="w-full max-w-md">
+        <div class="mb-8">
+          <h2 class="text-3xl font-black text-gray-900">Sign in</h2>
+          <p class="text-gray-500 text-sm mt-1">Enter your credentials to continue</p>
+        </div>
+
+        <!-- Demo credentials hint -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 mb-6 text-sm">
+          <p class="font-semibold text-yellow-800 mb-1">Demo credentials:</p>
+          <p class="text-yellow-700 font-mono">admin@example.com / 1234</p>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Email</label>
+            <input
+              v-model="email"
+              type="email"
+              placeholder="admin@example.com"
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-shadow"
+              :class="{ 'border-red-400 focus:ring-red-400': formError }"
+              @keyup.enter="handleLogin"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Password</label>
+            <div class="relative">
+              <input
+                v-model="password"
+                :type="showPass ? 'text' : 'password'"
+                :placeholder="showPass ? '1234' : '••••••••'"
+                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent pr-10 transition-shadow"
+                :class="{ 'border-red-400 focus:ring-red-400': formError }"
+                @keyup.enter="handleLogin"
+              />
+              <button type="button" @click="showPass = !showPass"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm">
+                {{ showPass ? '🔑' : '🔒' }}
+              </button>
+            </div>
+          </div>
+
+          <Transition name="slide-down">
+            <p v-if="formError" class="text-red-500 text-xs font-medium">{{ formError }}</p>
+          </Transition>
+
+          <AppButton
+            variant="primary"
+            size="lg"
+            :loading="loading"
+            class="w-full justify-center mt-2"
+            @click="handleLogin"
+          >
+            Sign In
+          </AppButton>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import AppButton from '~/components/ui/AppButton.vue'
+
+definePageMeta({ layout: false })
+
 const auth = useAuthStore()
 const email = ref('')
 const password = ref('')
-const error = ref('')
+const formError = ref('')
 const loading = ref(false)
 const successAnimation = ref(false)
-const showAlert = ref(false)
+const showPass = ref(false)
 
 const handleLogin = async () => {
-  error.value = ''
-  showAlert.value = false
+  formError.value = ''
   loading.value = true
+  await new Promise(r => setTimeout(r, 800))
 
-  await new Promise(resolve => setTimeout(resolve, 1000))
-
-  const success = auth.login(email.value, password.value)
-
+  const ok = auth.login(email.value, password.value)
   loading.value = false
 
-  if (success) {
+  if (ok) {
     successAnimation.value = true
-
-    setTimeout(() => {
-    }, 1000)
   } else {
-    error.value = 'Email atau password salah'
-    showAlert.value = true
-
-    setTimeout(() => (showAlert.value = false), 2000)
+    formError.value = 'Invalid email or password.'
   }
 }
 </script>
+
+<style scoped>
+.slide-down-enter-active, .slide-down-leave-active { transition: all 0.2s ease; }
+.slide-down-enter-from, .slide-down-leave-to { opacity: 0; transform: translateY(-8px); }
+</style>

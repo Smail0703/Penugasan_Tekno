@@ -1,11 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
 :root {
-  --primary-color: #30364F;
-  --secondary-color: #ACBAC4;
-  --third-color: #E1D9BC;
-  --fourth-color: #F0F0DB;
-  --fifth-color: #FFFBF1;
+  --primary-color: #111827;   /* gray-900 */
+  --accent-color:  #facc15;   /* yellow-400 */
+  --fifth-color:   #f9fafb;   /* gray-50 */
+
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+}
+
+/* ─── Base ──────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--fifth-color);
+  color: var(--primary-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ─── Page transitions ──────────────────────────────────────── */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* ─── Nuxt Link active ──────────────────────────────────────── */
+.router-link-active {
+  /* handled per-component, override here if needed */
+}
+
+/* ─── Utilities ─────────────────────────────────────────────── */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Pokemon card hover glow */
+.pokemon-glow:hover {
+  box-shadow: 0 0 24px 4px rgba(250, 204, 21, 0.25);
 }
